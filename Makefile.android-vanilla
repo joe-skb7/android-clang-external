@@ -1,0 +1,168 @@
+CC = $(CROSS_COMPILE)gcc
+LD = $(CROSS_COMPILE)gcc
+
+# Be silent per default, but 'make V=1' will show all compiler calls
+ifneq ($(V),1)
+Q := @
+endif
+
+CFLAGS += -Wall -O2 -g
+CFLAGS += \
+	-Wno-null-pointer-arithmetic \
+	-Wno-null-dereference \
+	-mthumb \
+	-fomit-frame-pointer \
+	-DANDROID \
+	-fmessage-length=0 \
+	-W \
+	-Wno-unused \
+	-Winit-self \
+	-Wpointer-arith \
+	-no-canonical-prefixes \
+	-DNDEBUG \
+	-UDEBUG \
+	-fno-exceptions \
+	-Wno-multichar \
+	-fno-strict-aliasing \
+	-fdebug-prefix-map=/proc/self/cwd= \
+	-D__compiler_offsetof=__builtin_offsetof \
+	-faddrsig \
+	-Wimplicit-fallthrough \
+	-Wno-error=implicit-fallthrough \
+	-Werror=int-conversion \
+	-fexperimental-new-pass-manager \
+	-Wno-reserved-id-macro \
+	-Wno-format-pedantic \
+	-Wno-unused-command-line-argument \
+	-fcolor-diagnostics \
+	-Wno-zero-as-null-pointer-constant \
+	-Wno-sign-compare \
+	-Wno-defaulted-function-deleted \
+	-Wno-inconsistent-missing-override \
+	-ffunction-sections \
+	-fdata-sections \
+	-fno-short-enums \
+	-funwind-tables \
+	-fstack-protector-strong \
+	-Wa,--noexecstack \
+	-D_FORTIFY_SOURCE=2 \
+	-Wstrict-aliasing=2 \
+	-Werror=return-type \
+	-Werror=non-virtual-dtor \
+	-Werror=address \
+	-Werror=sequence-point \
+	-Werror=date-time \
+	-Werror=format-security \
+	-nostdlibinc \
+	-msoft-float \
+	-march=armv7-a \
+	-mfloat-abi=softfp \
+	-mfpu=neon \
+	-mcpu=cortex-a15 \
+	-mfpu=neon-vfpv4 \
+	-D__ARM_FEATURE_LPAE=1 \
+	-I$(ANDROID_BUILD_TOP)/external/boringssl/src/include \
+	-I$(ANDROID_BUILD_TOP)/system/core/libcutils/include \
+	-I$(ANDROID_BUILD_TOP)/system/core/libprocessgroup/include \
+	-I$(ANDROID_BUILD_TOP)/system/core/liblog/include \
+	-I$(ANDROID_BUILD_TOP)/system/netd/include \
+	-I$(ANDROID_BUILD_TOP)/external/libcxx/include \
+	-I$(ANDROID_BUILD_TOP)/external/libcxxabi/include \
+	-I$(ANDROID_BUILD_TOP)/bionic/libc/include \
+	-D__LIBC_API__=10000 \
+	-D__LIBM_API__=10000 \
+	-D__LIBDL_API__=10000 \
+	-I$(ANDROID_BUILD_TOP)/system/core/include \
+	-I$(ANDROID_BUILD_TOP)/system/media/audio/include \
+	-I$(ANDROID_BUILD_TOP)/hardware/libhardware/include \
+	-I$(ANDROID_BUILD_TOP)/hardware/libhardware_legacy/include \
+	-I$(ANDROID_BUILD_TOP)/hardware/ril/include \
+	-I$(ANDROID_BUILD_TOP)/frameworks/native/include \
+	-I$(ANDROID_BUILD_TOP)/frameworks/native/opengl/include \
+	-I$(ANDROID_BUILD_TOP)/frameworks/av/include \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/include \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/kernel/uapi \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/kernel/uapi/asm-arm \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/kernel/android/scsi \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/kernel/android/uapi \
+	-I$(ANDROID_BUILD_TOP)/libnativehelper/include_jni \
+	-target armv7a-linux-androideabi \
+	-B$(GCC_DIR)/arm-linux-androideabi/bin \
+	-fPIE \
+	-D_USING_LIBCXX \
+	-std=gnu99 \
+	-Werror=int-to-pointer-cast \
+	-Werror=pointer-to-int-cast \
+	-Werror=address-of-temporary \
+	-Werror=return-type \
+	-Wno-tautological-constant-compare \
+	-Wno-tautological-type-limit-compare \
+	-Wno-tautological-unsigned-enum-zero-compare \
+	-Wno-tautological-unsigned-zero-compare \
+	-Wno-enum-compare \
+	-Wno-enum-compare-switch \
+	-Wno-c++98-compat-extra-semi \
+	-Wno-return-std-move-in-c++11
+LDFLAGS += \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libc/crtbegin_dynamic/android_arm_armv7-a-neon_cortex-a15_core/crtbegin_dynamic.o \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/external/libunwind_llvm/libunwind_llvm/android_arm_armv7-a-neon_cortex-a15_core_static/libunwind_llvm.a \
+	-Wl,--start-group \
+	$(ANDROID_BUILD_TOP)/prebuilts/clang/host/linux-x86/clang-r353983c/lib64/clang/9.0.3/lib/linux/libclang_rt.builtins-arm-android.a \
+	$(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/arm-linux-androideabi/lib/libatomic.a \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/build/soong/libgcc_stripped/android_arm_armv7-a-neon_cortex-a15_core_static/libgcc_stripped.a \
+	-Wl,--end-group \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/external/boringssl/libcrypto/android_arm_armv7-a-neon_cortex-a15_core_shared/libcrypto.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/system/core/libcutils/libcutils/android_arm_armv7-a-neon_cortex-a15_core_shared/libcutils.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/system/core/liblog/liblog/android_arm_armv7-a-neon_cortex-a15_core_shared/liblog.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/system/netd/client/libnetd_client/android_arm_armv7-a-neon_cortex-a15_core_shared/libnetd_client.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/external/libcxx/libc++/android_arm_armv7-a-neon_cortex-a15_core_shared/libc++.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libc/libc/android_arm_armv7-a-neon_cortex-a15_core_shared_10000/libc.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libm/libm/android_arm_armv7-a-neon_cortex-a15_core_shared_10000/libm.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libdl/libdl/android_arm_armv7-a-neon_cortex-a15_core_shared_10000/libdl.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libc/crtend_android/android_arm_armv7-a-neon_cortex-a15_core/obj/bionic/libc/arch-common/bionic/crtend.o \
+	-target armv7a-linux-androideabi \
+	-B$(GCC_DIR)/bin \
+	-Wl,-z,noexecstack \
+	-Wl,-z,relro \
+	-Wl,-z,now \
+	-Wl,--build-id=md5 \
+	-Wl,--warn-shared-textrel \
+	-Wl,--fatal-warnings \
+	-Wl,--no-undefined-version \
+	-Wl,--exclude-libs,libgcc.a \
+	-Wl,--exclude-libs,libgcc_stripped.a \
+	-fuse-ld=lld \
+	-Wl,--pack-dyn-relocs=android+relr \
+	-Wl,--use-android-relr-tags \
+	-Wl,--no-undefined \
+	-Wl,--icf=safe \
+	-Wl,--hash-style=gnu \
+	-Wl,-m,armelf \
+	-pie \
+	-nostdlib \
+	-Bdynamic \
+	-Wl,--gc-sections \
+	-Wl,-z,nocopyreloc \
+	-Wl,--exclude-libs,libunwind_llvm.a \
+	$(ANDROID_BUILD_TOP)/prebuilts/clang/host/linux-x86/clang-r353983c/lib64/clang/9.0.3/lib/linux/libclang_rt.ubsan_minimal-arm-android.a \
+	-Wl,--exclude-libs,libclang_rt.ubsan_minimal-arm-android.a \
+	-Wl,-dynamic-linker,/system/bin/linker
+
+OBJS = main.o
+OUT = main
+
+all: $(OUT)
+
+$(OUT): $(OBJS)
+	@printf "  LD      $@\n"
+	$(Q)$(LD) $(LDFLAGS) $(OBJS) -o $@
+
+%.o: %.c
+	@printf "  CC      $(*).c\n"
+	$(Q)$(CC) $(CFLAGS) -o $(*).o -c $(*).c
+
+clean:
+	@printf "  CLEAN\n"
+	$(Q)-rm -f $(OBJS) $(OUT)
+
+.PHONY: all clean

@@ -1,0 +1,45 @@
+CC = $(CROSS_COMPILE)gcc
+LD = $(CROSS_COMPILE)gcc
+
+# Be silent per default, but 'make V=1' will show all compiler calls
+ifneq ($(V),1)
+Q := @
+endif
+
+CFLAGS += -Wall -O2 -g
+CFLAGS += \
+	-I$(ANDROID_BUILD_TOP)/bionic/libc/include \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/include \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/kernel/uapi \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/kernel/uapi/asm-arm \
+	-isystem $(ANDROID_BUILD_TOP)/bionic/libc/kernel/android/uapi \
+	-target armv7a-linux-androideabi
+LDFLAGS += \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libc/crtbegin_dynamic/android_arm_armv7-a-neon_cortex-a15_core/crtbegin_dynamic.o \
+	-Wl,--start-group \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/build/soong/libgcc_stripped/android_arm_armv7-a-neon_cortex-a15_core_static/libgcc_stripped.a \
+	-Wl,--end-group \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libc/libc/android_arm_armv7-a-neon_cortex-a15_core_shared_10000/libc.so \
+	$(ANDROID_BUILD_TOP)/out/soong/.intermediates/bionic/libc/crtend_android/android_arm_armv7-a-neon_cortex-a15_core/obj/bionic/libc/arch-common/bionic/crtend.o \
+	-target armv7a-linux-androideabi \
+	-fuse-ld=lld \
+	-nostdlib
+
+OBJS = main.o
+OUT = main
+
+all: $(OUT)
+
+$(OUT): $(OBJS)
+	@printf "  LD      $@\n"
+	$(Q)$(LD) $(LDFLAGS) $(OBJS) -o $@
+
+%.o: %.c
+	@printf "  CC      $(*).c\n"
+	$(Q)$(CC) $(CFLAGS) -o $(*).o -c $(*).c
+
+clean:
+	@printf "  CLEAN\n"
+	$(Q)-rm -f $(OBJS) $(OUT)
+
+.PHONY: all clean
