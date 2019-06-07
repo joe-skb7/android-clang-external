@@ -20,6 +20,8 @@ There are 3 versions of `Makefile` available here:
   removed)
 - `Makefile.minimal`: only 100% required flags are left here
 
+It's probably better to use flags from `Makefile` for production projects.
+
 Here is how I found out all clang build flags from Android build:
 
 ```
